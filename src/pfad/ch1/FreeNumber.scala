@@ -16,8 +16,10 @@ trait NSquared extends MinFree {
 trait ArrayBased extends MinFree {
   def accumulateArray[E: ClassManifest, V](acc: (E, V) => E, default: E, n: Int, list: List[(Int, V)]): Array[E] = {
     var arr = Array.fill(n + 1)(default)
-    for ((i, v) <- list)
-      arr(i) = acc(arr(i), v)
+    list.map {
+      case (i, v) =>
+        arr(i) = acc(arr(i), v)
+    }
     arr
   }
 
@@ -33,13 +35,16 @@ trait ArrayBased extends MinFree {
 
 trait DivideAndConquer extends MinFree {
   def minFrom(a: Int, n: Int, list: List[Int]): Int = {
-    if (n == 0) a
+    if (n == 0)
+      a
     else {
       val b = a + 1 + n / 2
       val (us, vs) = list.partition(_ < b)
       val m = us.length
-      if (m == b - a) minFrom(b, n - m, vs)
-      else minFrom(a, m, us)
+      if (m == b - a)
+        minFrom(b, n - m, vs)
+      else
+        minFrom(a, m, us)
     }
   }
 
